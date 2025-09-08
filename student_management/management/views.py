@@ -333,10 +333,10 @@ def report_overview(request):
     students_with_enrollments = (
         Student.objects
         .annotate(enrollment_count=Count('enrollments'))
-        .order_by('-enrollment_count')[:10]   # get top 10
+        .order_by('-enrollment_count')[:5]   # get top 10
     )
     
-    popular_courses = Course.objects.annotate(enrollment_count = Count('enrollments')).order_by('-enrollment_count')[:10]
+    popular_courses = Course.objects.annotate(enrollment_count = Count('enrollments')).order_by('-enrollment_count')[:5]
     
     grade_stats = {}
     
