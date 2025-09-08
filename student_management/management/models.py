@@ -47,6 +47,9 @@ class Course(models.Model):
         
         if self.title:
             self.title = self.title.strip()
+
+        if self.credits is None:
+            raise ValidationError("Credits cannot be empty.")
             
         if self.credits < 1 or self.credits > 6:
             return ValidationError('Credits must be between 1 and 6.')
