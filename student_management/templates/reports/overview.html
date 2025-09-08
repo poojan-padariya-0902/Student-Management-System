@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports - Student Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>
+        <i class="fas fa-chart-bar me-2"></i>
+        Reports & Analytics
+    </h1>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h3>{{ total_students }}</h3>
+                <p class="mb-0">Total Students</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <i class="fas fa-book fa-2x mb-2"></i>
+                <h3>{{ total_courses }}</h3>
+                <p class="mb-0">Total Courses</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body text-center">
+                <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                <h3>{{ total_enrollments }}</h3>
+                <p class="mb-0">Total Enrollments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body text-center">
+                <i class="fas fa-percentage fa-2x mb-2"></i>
+                <h3>
+                    {% if total_enrollments > 0 %}
+                        {% widthratio total_enrollments total_students 1 %}:1
+                    {% else %}
+                        0:0
+                    {% endif %}
+                </h3>
+                <p class="mb-0">Enrollment Ratio</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-trophy me-2"></i>
+                    Top Students by Enrollments
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if students_with_enrollments %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Student Name</th>
+                                    <th>Enrollments</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students_with_enrollments %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ student.name }}</td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ student.enrollment_count }}</span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'student_transcript' student.pk %}" 
+                                               class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-file-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No student data available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-star me-2"></i>
+                    Most Popular Courses
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if popular_courses %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Course Title</th>
+                                    <th>Enrollments</th>
+                                    <th>Credits</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in popular_courses %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            <a href="{% url 'course_detail' course.pk %}" 
+                                               class="text-decoration-none">
+                                                {{ course.title|truncatechars:30 }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">{{ course.enrollment_count }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ course.credits }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No course data available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Grade Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if grade_stats %}
+                    <div class="row">
+                        {% for grade_name, count in grade_stats.items %}
+                            {% if count > 0 %}
+                                <div class="col-md-2 mb-3">
+                                    <div class="text-center">
+                                        <div class="h4 text-primary">{{ count }}</div>
+                                        <div class="text-muted">{{ grade_name }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    {% if not grade_stats.values|first %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No grades assigned yet</h5>
+                            <p class="text-muted">Grades will appear here once students have been graded.</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No grade data available</h5>
+                        <p class="text-muted">Start by creating enrollments and assigning grades.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-download me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'student_list' %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-users me-2"></i>View All Students
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'course_list' %}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-book me-2"></i>View All Courses
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'enrollment_list' %}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-clipboard-list me-2"></i>View All Enrollments
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

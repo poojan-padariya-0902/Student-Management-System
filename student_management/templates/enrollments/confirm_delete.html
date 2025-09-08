@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Remove Enrollment - Student Management System{% endblock %}
+
+{% block content %}
+<h2>Confirm Remove Enrollment</h2>
+<p>Are you sure you want to remove the enrollment of <strong>{{ enrollment.student.name }}</strong> from <strong>{{ enrollment.course.title }}</strong>?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Remove</button>
+    <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'enrollment_list' %}'"> Cancle</button>
+</form>
+{% endblock %}

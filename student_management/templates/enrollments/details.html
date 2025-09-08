@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Enrollment Details</h2>
+<ul>
+    <li><strong>Student:</strong> {{ enrollment.student.name }}</li>
+    <li><strong>Course:</strong> {{ enrollment.course.title }}</li>
+    <li><strong>Grade:</strong> {{ enrollment.grade }}</li>
+    <li><strong>Date Enrolled:</strong> {{ enrollment.date_enrolled }}</li>
+    <!-- Add more fields as needed -->
+</ul>
+<a href="{% url 'enrollment_list' %}">Back to Enrollments</a>
+{% endblock %}

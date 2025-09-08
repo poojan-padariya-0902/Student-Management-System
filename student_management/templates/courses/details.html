@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Course Details</h2>
+<ul>
+    <li><strong>Title:</strong> {{ course.title }}</li>
+    <li><strong>Credits:</strong> {{ course.credits }}</li>
+    <!-- Add more fields as needed -->
+</ul>
+<button type="button" class="btn btn-secondary me-md-2" onclick="window.location.href='{% url 'course_list' %}'">
+    Back to Course
+</button>
+{% endblock %}

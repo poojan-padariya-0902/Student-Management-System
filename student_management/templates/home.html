@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Student Management System{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="dashboard-cards" style="display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 32px;">
+    <div class="card" style="flex: 1 1 200px; background: #f0f4f8; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+        <h2>Students</h2>
+        <p>Manage student records, add, edit, or remove students.</p>
+    <a href="{% url 'student_list' %}" class="btn">View Students</a>
+    </div>
+    <div class="card" style="flex: 1 1 200px; background: #f0f4f8; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+        <h2>Courses</h2>
+        <p>View and manage available courses.</p>
+    <a href="{% url 'course_list' %}" class="btn">View Courses</a>
+    </div>
+    <div class="card" style="flex: 1 1 200px; background: #f0f4f8; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+        <h2>Enrollments</h2>
+        <p>Enroll students in courses and manage enrollments.</p>
+    <a href="{% url 'enrollment_list' %}" class="btn">View Enrollments</a>
+    </div>
+    <div class="card" style="flex: 1 1 200px; background: #f0f4f8; border-radius: 8px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+        <h2>Reports</h2>
+        <p>Generate and view student transcripts and overviews.</p>
+    <a href="{% url 'reports_overview' %}" class="btn">View Reports</a>
+    </div>
+</div>
+
+<div style="margin-top: 40px;">
+    <h3>Welcome to the Student Management System</h3>
+    <p>Use the navigation above or the cards on this page to manage students, courses, enrollments, and reports.</p>
+</div>
+{% endblock %}

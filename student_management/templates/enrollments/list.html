@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}Enrollments - Student Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>
+        <i class="fas fa-clipboard-list me-2"></i>
+        Enrollments
+    </h1>
+    <a href="{% url 'enrollment_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>New Enrollment
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-3">Filter Enrollments</h5>
+        <form method="get" class="row">
+            <div class="col-4">
+                <label for="student" class="form-label">Student</label>
+                <select name="student" class="form-control">
+                    <option value="">All Students</option>
+                    {% for student in students %}
+                        <option value="{{ student.pk }}" 
+                                {% if current_filters.student == student.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ student.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-4">
+                <label for="course" class="form-label">Course</label>
+                <select name="course" class="form-control">
+                    <option value="">All Courses</option>
+                    {% for course in courses %}
+                        <option value="{{ course.pk }}"
+                                {% if current_filters.course == course.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ course.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-4">
+                <label for="grade" class="form-label">Grade</label>
+                <select name="grade" class="form-control">
+                    <option value="">All Grades</option>
+                    {% for grade_code, grade_name in grades %}
+                        <option value="{{ grade_code }}"
+                                {% if current_filters.grade == grade_code %}selected{% endif %}>
+                            {{ grade_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="fas fa-filter me-1"></i>Apply Filters
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-md-2" onclick="window.location.href='{% url 'enrollment_list' %}'">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        {% if enrollments %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Credits</th>
+                            <th>Grade</th>
+                            <th>Enrolled Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for enrollment in enrollments %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'student_detail' enrollment.student.pk %}" 
+                                       class="text-decoration-none">
+                                        {{ enrollment.student.name }}
+                                    </a>
+                                    <br>
+                                    <small class="text-muted">{{ enrollment.student.email }}</small>
+                                </td>
+                                <td>
+                                    <a href="{% url 'course_detail' enrollment.course.pk %}" 
+                                       class="text-decoration-none">
+                                        {{ enrollment.course.title }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">{{ enrollment.course.credits }}</span>
+                                </td>
+                                <td>
+                                    {% if enrollment.grade %}
+                                        <span class="badge bg-success">{{ enrollment.grade }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Not Graded</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ enrollment.enrollment_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'enrollment_update_grade' enrollment.pk %}" 
+                                           class="btn btn-outline-warning" title="Update Grade">
+                                            <i class="fas fa-star"></i>
+                                        </a>
+                                        <a href="{% url 'enrollment_delete' enrollment.pk %}" 
+                                           class="btn btn-outline-danger" title="Remove Enrollment">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if enrollments.has_other_pages %}
+                <nav aria-label="Enrollments pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if enrollments.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ enrollments.previous_page_number }}">Previous</a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Page {{ enrollments.number }} of {{ enrollments.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if enrollments.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ enrollments.next_page_number }}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ enrollments.paginator.num_pages }}">Last</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No enrollments found</h4>
+                <p class="text-muted">No enrollments match your current filters.</p>
+                <a href="{% url 'enrollment_create' %}" class="btn btn-primary">
+                    Create First Enrollment
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
